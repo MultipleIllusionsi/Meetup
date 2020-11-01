@@ -36,6 +36,14 @@ const customMeetupsStore = {
     };
     meetups.update((items) => [newMeetup, ...items]);
   },
+  updateMeetup: (id, meetupData) =>
+    meetups.update((items) =>
+      items.map((meetup) =>
+        meetup.id === id ? { ...meetup, ...meetupData } : meetup
+      )
+    ),
+  removeMeetup: (id) =>
+    meetups.update((items) => items.filter((i) => i.id !== id)),
   toggleFavorite: (id) => {
     meetups.update((items) =>
       items.map((meetup) =>
