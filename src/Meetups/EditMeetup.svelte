@@ -57,15 +57,53 @@
 
     // meetups.push(newMeetup); // DOES NOT WORK!
     if (id) {
-      meetups.updateMeetup(id, meetupData);
+      fetch(`https://meetupssvelte.firebaseio.com/meetups/${id}.json`, {
+        method: "PATCH",
+        body: JSON.stringify(meetupData),
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Failed");
+          }
+          meetups.updateMeetup(id, meetupData);
+        })
+        .catch((err) => console.log("err", err));
     } else {
-      meetups.addMeetup(meetupData);
+      fetch("https://meetupssvelte.firebaseio.com/meetups.json", {
+        method: "POST",
+        body: JSON.stringify({ ...meetupData, isFavourite: false }),
+        headers: { "Content-Type": "application/json" },
+      })
+        .then((res) => {
+          if (!res.ok) {
+            throw new Error("Failed");
+          }
+          return res.json();
+        })
+        .then((data) =>
+          meetups.addMeetup({
+            ...meetupData,
+            isFavourite: false,
+            id: data.name,
+          })
+        )
+        .catch((err) => console.log("err", err));
     }
     dispatch("save");
   }
 
   function deleteMeetup() {
-    meetups.removeMeetup(id);
+    fetch(`https://meetupssvelte.firebaseio.com/meetups/${id}.json`, {
+      method: "DELETE",
+    })
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error("Failed");
+        }
+        meetups.removeMeetup(id);
+      })
+      .catch((err) => console.log("err", err));
     dispatch("save");
   }
 
