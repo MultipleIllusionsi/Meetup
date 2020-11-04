@@ -111,6 +111,7 @@
   <div class="image"><img src={imageUrl} alt={title} /></div>
   <div class="content">
     <p>{description}</p>
+    <p>{email}</p>
   </div>
   <footer>
     <Button mode="outline" type="button" on:click={() => dispatch('edit', id)}>
